@@ -82,10 +82,101 @@ select product_name,unit_price,category_name
 from products as p, categories as c
 where p.category_id=c.category_id;
 --25
-select product_name,category_name,company_name
-from products as p, categories as c, suppliers as s
-where p.category_id=c.category_id and p.supplier_id=s.supplier_id
-and units_on_order=(select max (units_on_order) from products);
+--1
+select product_name,quantity_per_unit 
+from products;
+--2
+select product_id,product_name 
+from products 
+where discontinued=1;
+--3
+select discontinued,product_id,product_name 
+from products 
+where discontinued=0;
+--4
+select product_id,product_name,unit_price 
+from products 
+where unit_price<20;
+--5
+select product_id,product_name,unit_price 
+from products 
+where unit_price between 15 and 25;
+--6
+select product_name,units_on_order,units_in_stock 
+from products 
+where units_in_stock<units_on_order;
+--7
+select * from products 
+where product_name like 'A%';
+--8
+select * from products 
+where product_name like '%i';
+--9
+select product_name,unit_price,unit_price*0.18 
+as unit_price_KDV 
+from products;
+--10
+select count(*) 
+from products 
+where unit_price>30;
+--11
+select lower(product_name),unit_price 
+from products
+order by unit_price desc;
+--12
+select first_name || ' ' || last_name 
+as full_name
+from employees ;
+--13
+select count(*) as "NULL" 
+from suppliers 
+where region is NULL;
+--14
+select count(*) as "NOT NULL" 
+from suppliers 
+where region is NOT NULL;
+--15
+select concat('TR ', upper(product_name)) as NewName 
+from products;
+--16
+select ' TR ' || product_name from products where unit_price<20;
+--17
+select product_name, unit_price from products
+order by unit_price desc limit 1; 
+--18
+select product_name, unit_price from products
+order by unit_price desc limit 10; 
+--19
+select product_name,unit_price from products 
+where unit_price>(select avg(unit_price) from products);
+--20
+select sum(unit_price*units_in_stock) from products;
+--21
+select discontinued, count(*) as productcount from products 
+group by discontinued; 
+--22
+select product_name,category_name 
+from products as p, categories as c
+where p.category_id=c.category_id;
+--23
+select category_id, avg(unit_price)
+from products group by category_id;
+--24
+select product_name,unit_price,category_name
+from products as p, categories as c
+where p.category_id=c.category_id;
+--25
+select p.product_id, p.product_name, category_name, s.company_name, sum(quantity) as sale_amount 
+from order_details as od
+inner join products as p on p.product_id = od.product_id
+inner join categories as c on c.category_id = p.category_id
+inner join suppliers as s on s.supplier_id = p.supplier_id
+group by p.product_id, c.category_name, s.company_name
+order by sale_amount desc limit 1;
+
+
+
+
 
 
 
